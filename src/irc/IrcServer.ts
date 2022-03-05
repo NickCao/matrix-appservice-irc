@@ -553,7 +553,7 @@ export class IrcServer {
         // the vars and strip the @
         return renderTemplate(this.config.matrixClients.userTemplate, {
             server: this.domain,
-            nick,
+            nick: Buffer.from(nick).toString("hex"),
         }).substring(1); // the first character is guaranteed by config schema to be '@'
     }
 
@@ -588,12 +588,12 @@ export class IrcServer {
         if (!match) {
             return null;
         }
-        return match[1];
+        return Buffer.from(match[1], "hex").toString();
     }
 
     public getUserIdFromNick(nick: string) {
         const template = this.config.matrixClients.userTemplate;
-        return template.replace(/\$NICK/g, nick).replace(/\$SERVER/g, this.domain) +
+        return template.replace(/\$NICK/g, Buffer.from(nick).toString("hex")).replace(/\$SERVER/g, this.domain) +
             ":" + this.homeserverDomain;
     }
 
